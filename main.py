@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import sqlite3
 from data.classes.Board import Board
 
 pygame.init()
@@ -20,7 +21,7 @@ def load_image(name, color_key=None):
         raise SystemExit(message)
     image = image.convert_alpha()
     if color_key is not None:
-        if color_key is -1:
+        if color_key == -1:
             color_key = image.get_at((0, 0))
         image.set_colorkey(color_key)
     return image
@@ -52,6 +53,8 @@ def start_screen():
 
 
 if __name__ == '__main__':
+    con = sqlite3.connect("kazhchess.db")
+    stats = con.cursor()
     start_screen()
     running = True
     while running:
@@ -65,10 +68,16 @@ if __name__ == '__main__':
                 if event.button == 1:
                     board.handle_click(mx, my)
         if board.is_in_checkmate('black'):  # If black is in checkmate
-            print('White wins!')
+            x = stats.execute("""SELECT whites FROM stats""").fetchall()[0][0]
+            stats.execute(f"""UPDATE stats SET whites = '{x + 1}'""")
+            print('White wins! count of wins:', x + 1)
+            con.commit()
             running = False
         elif board.is_in_checkmate('white'):  # If white is in checkmate
-            print('Black wins!')
+            x = stats.execute("""SELECT blacks FROM stats""").fetchall()[0][0]
+            stats.execute(f"""UPDATE stats SET black = '{x + 1}'""")
+            print('Black wins! count of wins:', x + 1)
+            con.commit()
             running = False
         # Draw the board
         draw(screen)
