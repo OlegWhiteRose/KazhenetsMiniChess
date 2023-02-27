@@ -53,10 +53,12 @@ def start_screen():
 
 
 if __name__ == '__main__':
-    con = sqlite3.connect("kazhchess.db")
+    con = sqlite3.connect("data\kazhchess.db")
     stats = con.cursor()
     start_screen()
     running = True
+    pygame.mixer.music.load("data\soundtrack.mp3")
+    pygame.mixer.music.play(loops=-1)
     while running:
         mx, my = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -75,7 +77,7 @@ if __name__ == '__main__':
             running = False
         elif board.is_in_checkmate('white'):  # If white is in checkmate
             x = stats.execute("""SELECT blacks FROM stats""").fetchall()[0][0]
-            stats.execute(f"""UPDATE stats SET black = '{x + 1}'""")
+            stats.execute(f"""UPDATE stats SET blacks = '{x + 1}'""")
             print('Black wins! count of wins:', x + 1)
             con.commit()
             running = False
