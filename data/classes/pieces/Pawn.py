@@ -19,13 +19,9 @@ class Pawn(Piece):
         # move forward
         if self.color == 'white':
             moves.append((0, -1))
-            if not self.has_moved:
-                moves.append((0, -2))
 
         elif self.color == 'black':
             moves.append((0, 1))
-            if not self.has_moved:
-                moves.append((0, 2))
 
         for move in moves:
             new_pos = (self.x, self.y + move[1])
