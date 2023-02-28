@@ -1,3 +1,5 @@
+import time
+
 import pygame
 import sys
 import os
@@ -74,12 +76,14 @@ if __name__ == '__main__':
             stats.execute(f"""UPDATE stats SET whites = '{x + 1}'""")
             print('White wins! count of wins:', x + 1)
             con.commit()
+            time.sleep(5)
             running = False
         elif board.is_in_checkmate('white'):  # If white is in checkmate
             x = stats.execute("""SELECT blacks FROM stats""").fetchall()[0][0]
             stats.execute(f"""UPDATE stats SET blacks = '{x + 1}'""")
             print('Black wins! count of wins:', x + 1)
             con.commit()
+            time.sleep(5)
             running = False
         # Draw the board
         draw(screen)
